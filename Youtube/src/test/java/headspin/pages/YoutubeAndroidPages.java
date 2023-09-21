@@ -12,12 +12,10 @@ import static headspin.locators.AppiumLocator.*;
 
 public class YoutubeAndroidPages {
 
-    public void launchApp() throws MalformedURLException {
+    public void launchApp(String udid, String url) throws MalformedURLException {
         status="App Launch Failed";
         time_stamps1.put("start", String.valueOf(System.currentTimeMillis()));
-        AccessApplication();
-       // status="Failed to Verify HomePage";
-        //time_stamps1.put("start", String.valueOf(System.currentTimeMillis()));
+        AccessApplication(udid,url);
         waitForElementPresent(youtubelogo);
         time_stamps1.put("end", String.valueOf(System.currentTimeMillis()));
         kpi_labels.put("Launch Time",time_stamps1);
@@ -32,7 +30,7 @@ public class YoutubeAndroidPages {
         time_stamps2.put("end", String.valueOf(System.currentTimeMillis()));
         kpi_labels.put("Search Tab Load Time",time_stamps2);
 
-        waitForElementAndSendKeys(searchtab,getConfigProperty("searchvideo"));
+        waitForElementAndSendKeys(searchtab,"headspin");
         waitForElementAndClick(searchvideos);
     }
 
@@ -47,16 +45,17 @@ public class YoutubeAndroidPages {
         waitForElementAndClick(playvideo);
         status="Video Page Load Failed";
         time_stamps4.put("start", String.valueOf(System.currentTimeMillis()));
-        if (waitForElementPresent(ad) || waitForElementPresent(sharebutton))
-            time_stamps4.put("end", String.valueOf(System.currentTimeMillis()));
-        else
-            System.err.println("Element not Found");
+        try{
+            shortWaitForElementPresent(ad);
+        }
+        catch(Exception e) {
+            waitForElementPresent(sharebutton);
+        }
+        time_stamps4.put("end", String.valueOf(System.currentTimeMillis()));
         kpi_labels.put("Video Load Time",time_stamps4);
-
         Thread.sleep(Duration.ofSeconds(5));
         waitForElementAndClick(videoplayer);
         status="Pass";
-        System.out.println(kpi_labels);
 
     }
 }

@@ -49,7 +49,6 @@ public class session_visual_lib {
                 captureStarted = (BigDecimal) json.get("capture-started");
                 capture_timestamp.put("capture-started", captureStarted);
                 video_start_timestamp = capture_timestamp.get("capture-started").multiply(BigDecimal.valueOf(1000)).longValue();
-                System.out.println("Check in get_video_start_timestamp");
             }
 
         } catch (NumberFormatException e) {
@@ -69,8 +68,8 @@ public class session_visual_lib {
             float start_sensitivity = 0, end_sensitivity = 0;
             long new_label_start_time = 0, new_label_end_time = 0;
             Map<String, String> label = kpi_labels.get(label_key);
-            System.out.println(label.get("start")+"starttime");
-            System.out.println(label.get("end")+"endtime");
+            System.out.println(label.get("start")+":"+label_key+" starttime");
+            System.out.println(label.get("end")+":"+label_key+" endtime");
 
             if (label.containsKey("start") && label.containsKey("end")) {
                 System.out.println(video_start_timestamp);
@@ -79,7 +78,6 @@ public class session_visual_lib {
 
                 if (labelStartTime < 0)
                     labelStartTime = (long) 0.01F;
-               // System.out.println("Float Start"+((float)labelStartTime/1000)+"Float End"+((float)labelEndTime/1000));
                 HsAPI.add_label(sessionID, label_key, "desired region", ((float)labelStartTime/1000) , ((float)labelEndTime/1000));
 
                 if (label.containsKey("start_sensitivity"))
@@ -93,10 +91,13 @@ public class session_visual_lib {
                         if (screen_change_list != null && !screen_change_list.isEmpty()) {
                             long segmentStart = Long.parseLong(label.get("segment_start"));
                             long segmentEnd = Long.parseLong(label.get("segment_end"));
-
-                            if (segmentStart >= 0 && segmentStart < screen_change_list.size() && segmentStart >= 0 && segmentEnd < screen_change_list.size()) {
-                                 Long segment_start= (Long)screen_change_list.get(0);
-                                 Long segment_end=(Long)screen_change_list.get(1);
+                            if (segmentStart<0)
+                                segmentStart=screen_change_list.size()+segmentStart;
+                            if(segmentEnd<0)
+                                segmentEnd=screen_change_list.size()+segmentEnd;
+                            if (segmentStart < screen_change_list.size() && segmentEnd < screen_change_list.size()) {
+                                 Long segment_start= (Long)screen_change_list.get((int) segmentStart);
+                                 Long segment_end=(Long)screen_change_list.get((int) segmentEnd);
                                  new_label_start_time = segment_start.longValue();
                                  new_label_end_time = segment_end.longValue();
                             }
@@ -155,7 +156,6 @@ public class session_visual_lib {
                List<Map<String, Object>> pageLoadRegions = (List<Map<String, Object>>) pageload.get("page_load_regions");
                Integer start_time= (Integer) pageLoadRegions.get(0).get("start_time");
                Integer end_time=(Integer) pageLoadRegions.get(0).get("end_time");
-              // System.out.println(start_time+"start_time");
                screenChangeList.add(start_time.longValue());
                screenChangeList.add(end_time.longValue());
                sn++;
@@ -219,7 +219,6 @@ public class session_visual_lib {
         sessionData.put("session_id", sessionID);
         sessionData.put("test_name", test_name);
         sessionData.put("status", session_status);
-       // List<Map<String, Object>> data = new ArrayList<>();
 
         Map<String, Object> appInfo = new HashMap<>();
         appInfo.put("key", "app");
@@ -240,7 +239,6 @@ public class session_visual_lib {
         sessionData.put("data", data);
         System.out.println( sessionData + ":Session Data");
         return sessionData;
-
     }
 
     public static List<Map<String, Object>> add_kpi_data_from_labels(Map<String, Object> sessionData) {
@@ -252,13 +250,11 @@ public class session_visual_lib {
                 data.put("key", label_key);
                 long start_time = Long.parseLong(kpi_labels.get(label_key).get("start"));
                 long end_time = Long.parseLong(kpi_labels.get(label_key).get("end"));
-               // System.out.println(start_time + ":start_time" + end_time + ":end_time");
                 if (start_time != 0 && end_time != 0) {
                     long duration = (end_time - start_time);
                     data.put("value", duration);
                     dataList.add(data);
                 }
-
             }
         }
         return dataList;

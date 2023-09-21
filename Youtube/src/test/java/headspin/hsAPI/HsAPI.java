@@ -45,13 +45,8 @@ public class HsAPI {
             String r1 = response.toString();
             String desiredDeviceId = Appium_Driver.getCapabilities().getCapability("udid").toString();
             try {
-                // Parse the JSON response into a JSON object
                 JSONObject jsonObject = new JSONObject(r1);
-
-                // Get the "devices" array from the JSON
                 JSONArray devicesArray = jsonObject.getJSONArray("devices");
-
-                // Iterate through the devices to find the one with the target serial
                 for (int i = 0; i < devicesArray.length(); i++) {
                     JSONObject device = devicesArray.getJSONObject(i);
                     String deviceId = device.getString("device_id");
@@ -66,8 +61,8 @@ public class HsAPI {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
+        connection.disconnect();
     }
     //
     public static String get_capture_timestamp(String sessionID) throws IOException {
@@ -99,6 +94,7 @@ public class HsAPI {
                 }
             return null;
         }
+        connection.disconnect();
         return response.toString();
     }
 
@@ -122,9 +118,8 @@ public class HsAPI {
         else{
             System.err.println("Failed to get session video metadata");
         }
+        connection.disconnect();
         return response.toString();
-
-
     }
     public static void add_label(String sessionId, String name, String category, float startTime, float endTime) throws IOException {
 
@@ -133,8 +128,6 @@ public class HsAPI {
     public static void add_label(String sessionId, String name, String category, float start_time, float end_time, boolean pinned, String labelType, String data) throws IOException {
         String request_url = url_root + "/sessions/" +  sessionId + "/label/add";
 
-       // System.out.println(start_time + " start_time"+end_time+"end_time");
-
         URL url = new URL(request_url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
@@ -142,7 +135,6 @@ public class HsAPI {
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoOutput(true);
 
-        // Create JSON payload
         String jsonPayload = "{\"name\":\"" + name + "\","
                 + "\"category\":\"" + category + "\","
                 + "\"start_time\":\"" + start_time + "\","
@@ -151,7 +143,7 @@ public class HsAPI {
                 + "\"pinned\":" + pinned + ","
                 + "\"label_type\":\"" + labelType + "\"}";
 
-        // Write JSON payload to the request body
+
         try (OutputStream os = connection.getOutputStream()) {
             byte[] input = jsonPayload.getBytes("utf-8");
             os.write(input, 0, input.length);
@@ -188,7 +180,6 @@ public class HsAPI {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            //  JSON payload
             Map<String, Object> dataPayload = new HashMap<>();
             Map<String, String> regionTimes = new HashMap<>();
             System.out.println((labelStartTime / 1000)+"labelStartTime");
@@ -198,7 +189,6 @@ public class HsAPI {
             regionTimes.put("end_time", String.valueOf((labelEndTime / 1000)));
             regionTimes.put("name", name);
 
-            //  list to hold the region object
             List<Map<String,String>> regionsList = new ArrayList<>();
             regionsList.add(regionTimes);
 
@@ -211,8 +201,6 @@ public class HsAPI {
                 dataPayload.put("end_sensitivity", endSensitivity);
             }
 
-
-            //  JSON payload to the request body
             try (OutputStream os = connection.getOutputStream()) {
                 objectMapper.writeValue(os, dataPayload);
             }
@@ -277,6 +265,7 @@ public class HsAPI {
           else {
                  System.err.println("HTTP Request failed with response code: " + responseCode);
              }
+          connection.disconnect();
     }
 
     public static void addSessionTags(String sessionID, List<String> tags) throws IOException {

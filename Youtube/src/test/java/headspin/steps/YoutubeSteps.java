@@ -10,9 +10,9 @@ import java.net.MalformedURLException;
 
 public class YoutubeSteps {
     YoutubeAndroidPages yp1=new YoutubeAndroidPages();
-    @Given("Launch the Youtube App")
-    public void launchTheYoutubeApp() throws MalformedURLException {
-        yp1.launchApp();
+    @Given("Launch the Youtube App {string} and {string}")
+    public void launchTheYoutubeApp(String udid,String url) throws MalformedURLException {
+        yp1.launchApp(udid,url);
 
     }
 
@@ -25,4 +25,5 @@ public class YoutubeSteps {
     public void userPlayTheVideo() throws InterruptedException {
         yp1.playVideo();
     }
+
 }
