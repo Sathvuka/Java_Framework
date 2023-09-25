@@ -10,7 +10,7 @@ https://maven.apache.org/download.cgi
 
 
 ## Run Command
-mvn test -Dudid=RZ8NA0Z723M -Durl=https://dev-in-blr-0.headspin.io:3012/v0/b048fc345f604fe9ad9c3fa2e9234b6f/wd/hub
+mvn test -Dudid="Replace_With_Device_UDID" -Durl="Replace_With_Device_URL"
 
 
 
