@@ -18,11 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static headspin.globalVariables.GlobalVariables.Appium_Driver;
+import static headspin.globalVariables.GlobalVariables.*;
 
 public class HsAPI {
     Map<String, String> tags = new HashMap<>();
-    static String apiKey = "b048fc345f604fe9ad9c3fa2e9234b6f";
+    static String apiKey = get_access_token();
 
     static String url_root = "https://api-dev.headspin.io/v0";
     public HsAPI() throws IOException {
@@ -328,6 +328,20 @@ public class HsAPI {
 
            }
         connection.disconnect();
+    }
+    public static String get_access_token(){
+        String appium_url= String.valueOf(deviceurl);
+        int v0Index = appium_url.indexOf("/v0/");
+        if (v0Index != -1) {
+            String substring = appium_url.substring(v0Index + 4);
+            int endIndex = substring.indexOf("/");
+            if (endIndex != -1) {
+                return substring.substring(0, endIndex);
+            } else {
+                return null;
+            }
+        }
+        return null;
     }
     }
 

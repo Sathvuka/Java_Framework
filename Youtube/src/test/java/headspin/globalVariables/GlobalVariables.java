@@ -23,8 +23,10 @@ public class GlobalVariables {
 
     public static String status;
 
-   public static List<String> tags = new ArrayList<>();
+    public static List<String> tags = new ArrayList<>();
+
     public static String sessionID;
+    public static URL deviceurl;
 
 
 

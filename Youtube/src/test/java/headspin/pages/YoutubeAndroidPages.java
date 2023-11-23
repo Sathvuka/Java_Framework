@@ -30,7 +30,7 @@ public class YoutubeAndroidPages {
         time_stamps2.put("end", String.valueOf(System.currentTimeMillis()));
         kpi_labels.put("Search Tab Load Time",time_stamps2);
 
-        waitForElementAndSendKeys(searchtab,"headspin");
+        waitForElementAndSendKeys(searchtab,"headspin peformance session video");
         waitForElementAndClick(searchvideos);
     }
 

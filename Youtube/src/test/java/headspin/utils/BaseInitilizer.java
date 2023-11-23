@@ -10,11 +10,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static headspin.basicFunctionalities.PropertyFileReader.getConfigProperty;
-import static headspin.globalVariables.GlobalVariables.test_name;
+import static headspin.globalVariables.GlobalVariables.*;
 
 public class BaseInitilizer {
     public static AppiumDriver driver;
-    public static URL deviceurl;
 
     public static AppiumDriver getDriver(String udid , String url) throws MalformedURLException {
         DesiredCapabilities cap = new DesiredCapabilities();
